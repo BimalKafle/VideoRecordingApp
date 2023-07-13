@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Video Recording Example</title>
+</head>
+<body>
+  <button id="startBtn">Start Recording</button>
+  <button id="stopBtn">Stop Recording</button>
+  <button id="playBtn">Play Recording</button>
+
+  <video id="videoElement" width="640" height="480" autoplay></video>
+
+  <script type="module" src="site.js"></script>
+  <script type="module">
+    import { isSupported, connectDevice, startRecording, stopRecording } from './site.js';
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const playBtn = document.getElementById('playBtn');
+    const videoElement = document.getElementById('videoElement');
+
+    startBtn.addEventListener('click', async () => {
+      await isSupported();
+      await connectDevice();
+      await startRecording((data) => {
+        console.log('Recording Time:', data.recordingTime);
+      });
+    });
+
+    stopBtn.addEventListener('click', () => {
+      stopRecording();
+    });
+
+    playBtn.addEventListener('click', async () => {
+  const recordingData = await startRecording((data) => {
+    console.log('Recording Time:', data.recordingTime);
+  });
+
+  const videoURL = URL.createObjectURL(recordingData.movie);
+  videoElement.src = videoURL;
+});
+  </script>
+</body>
+</html>
